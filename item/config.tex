@@ -1,0 +1,66 @@
+\usepackage{docmute}
+\usepackage{lscape}
+\usepackage[top=35truemm,bottom=30truemm,left=30truemm,right=30truemm]{geometry}
+%\usepackage[dvipdfmx]{graphicx}
+%\usepackage[dvipdfmx]{color}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{titlesec}
+\usepackage{enumerate}
+\usepackage[dvipdfmx]{color, hyperref}
+\usepackage{pxjahyper}
+\usepackage{xcolor}
+\hypersetup{
+   colorlinks=true,
+   linkcolor=black,
+   urlcolor=blue,
+}
+
+%\titleformat*{\section}{\centering\fontsize{20.075pt}{30.112pt}\textgt}
+\titleformat*{\section}{\centering\huge\textgt}
+%\titleformat*{\subsection}{\fontsize{18.067pt}{27.101pt}\textgt}
+\titleformat*{\subsection}{\LARGE\textgt}
+%\titleformat*{\subsubsection}{\fontsize{16.060pt}{24.090pt}\textgt}
+\titleformat*{\subsubsection}{\Large\textgt}
+
+\usepackage{graphicx}
+\usepackage{pdfpages}
+
+\graphicspath{{./_fig/}{../_fig/}}
+\usepackage{here}
+%\usepackage{remreset}
+%\usepackage{fancyhdr}
+%\usepackage{lastpage}
+
+
+
+
+% ファイル分割用設定
+\newcommand{\ifdraft}{false}
+
+\makeatletter
+    \@removefromreset{figure}{chapter}
+    \def\thefigure{\arabic{figure}}
+
+    \@removefromreset{table}{chapter}
+    \def\thetable{\arabic{table}}
+
+    \@removefromreset{equation}{chapter}
+    \def\theequation{\arabic{equation}}
+
+    \renewcommand{\theequation}{% 式番号の付け方
+	\thesection.\arabic{equation}}
+    \@addtoreset{equation}{section}
+
+	\renewcommand{\thefigure}{% 図番号の付け方
+	\thesection.\arabic{figure}}
+	\@addtoreset{figure}{section}
+
+	\renewcommand{\thetable}{% 表番号の付け方
+	\thesection.\arabic{table}}
+    \@addtoreset{table}{section}
+
+    \providecommand*{\input@path}{}
+    \g@addto@macro\input@path{{./item/}}% append
+
+    \makeatother

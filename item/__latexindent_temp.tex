@@ -1,0 +1,168 @@
+\documentclass[dvipdfmx]{jsarticle}
+\input{config}
+
+\begin{document}
+
+\section{付録}
+
+\subsection{オムニホイールとメカナムホイールについて}
+オムニホイール・メカナムホイールは，一般的なタイヤのようにステアリングを用いて旋回するのではなく，駆動輪の回転差を用いて旋回を行う車輪である。車輪の回転差を制御することで，通常のタイヤのように車輪の回転方向への移動だけでなく，旋回や全方向への平行移動が可能である。また，ステアリングやクローラーを用いたタイヤと比較したとき，移動機構が簡素になり小型化と軽量化が期待できる。
+\subsubsection{オムニホイール}
+オムニホイールは，本体部分の主動回転と本体外円上に配置されたローラーの受動回転により，多方向への移動が可能となっている。通常，3輪または4輪で1セットとして使用する。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{omni-wheel.png}
+    \caption{オムニホイール}
+    \label{fig:omni-wheel}
+\end{figure}
+オムニホイールの特徴を以下に記した。
+\begin{itemize}
+    \item 全方向への移動が可能
+    \item 駆動系を小型化・軽量化することが可能
+    \item 振動が少ない
+\end{itemize}
+
+\subsubsection{メカナムホイール}
+メカナムホイールは，本体外円上に本体に対して45°傾いた樽型のローラーで覆われた車輪である。オムニホイールとは異なり，右向きホイール2輪左向きホイール2輪の計4輪を1セットで使用する。駆動力を伝達することにより従来の車輪と同じように前進後退ができるほか，駆動系を制御することにより旋回や左右移動が可能となる。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{mecanum-wheel.png}
+    \caption{メカナムホイール}
+    \label{fig:omni-wheel}
+\end{figure}
+オムニホイールの特徴を以下に記した。
+\begin{itemize}
+    \item 全方向への移動が可能
+    \item 駆動系を小型化・軽量化することが可能
+    \item 振動が少ない
+    \item モータの配置を平行にできる
+\end{itemize}
+
+\url{https://note.suzakugiken.jp/omni-mecanum-wheel-difference-ref-a/}
+
+\subsection{ねじ歯車の加工方法}
+\subsubsection{STLファイルの作成}
+ねじ歯車の加工データの出力は「SPR Player」を用いて行う。このとき入力データとしてSTL形式のファイルが必要である。STL形式とは三次元形状のデータを保持するファイルフォーマットの一つで三次元形状を小さな三角の集合体で表現するものである。
+
+このSTLファイルは様々な3DCADで出力することができ，今回のねじ歯車の加工に用いたSTLファイルはSolidWorksから出力した。このときの注意点として出力の精度を高くすることが挙げられる。先にも説明したようにSTLファイルは三角の集合体で表現されたデータであるため，この集合の密度が低いと曲面に連続した三角の模様ができてしまうことがある。
+
+\subsubsection{加工データの生成}
+加工データの生成は「SPR Player」を用いて行う。
+
+以下にねじ歯車の加工データ生成にあたって気をつけたことを示した。
+\begin{itemize}
+    \item やりたいことを決めるのタブで細部まで削る，曲面の多い形状，裏側まで削るを選択。
+    \item 切削データを作るのタブで材料のサイズを入力するところがあるが，A軸は偏心している可能性があるため，大きめに設定しておく。
+    \item 切削するのタブで加工データを出力にチェックを入れて加工を開始する。実際には加工は始まらずファイルが出力されるだけである。
+\end{itemize}
+\subsubsection{加工データの編集}
+ねじ歯車の加工データの場合，「SRP Player」の仕様上2方向（両面）ごとにしか加工できない。そのため，五枚歯のねじ歯車は5回加工しなければならない。このとき，加工の度に手動でA軸を回転させる必要がある。この作業は非常に面倒であるため加工データを直接編集して一度に加工できるようにする。
+
+加工データの編集方法を以下に示した。
+\begin{enumerate}
+    \item 加工データをメモ帳などのテキストエディタで開く。両面から加工する設定の場合ファイルは2つあるので両方とも開く。
+    \item A軸の初期設定が加工データの一行目にある。普通表面は0.00，裏面は180.00になっているはずである。
+    \item 初期設定を移動したい角度だけ足して新規保存する。5枚歯の歯車の場合，0.00，180.00それぞれに72.00を足した72.00，252.00に書き換える。
+    \item 3を回転させたい回数分繰り返すと，ファイルがその回数倍になっている。5枚歯で両面加工の場合ファイルの数は10である。
+\end{enumerate}
+\subsubsection{加工}
+説明書を見ながらドリルやワークを加工機に取り付けるなど加工準備を済ませた後「VPanel」を使って加工機を動作させて加工を行う。
+，「VPanel」に生成・編集した加工データをすべて読み込み加工を始める。
+
+\subsection{Grblのダウンロード方法とArduinoへの書き込み}
+Grblとは有志によって開発されたArduinoで動作するCNCのファームウェアである。Grblを動作させるにはPCなどからArduinoへシリアル通信でG-codeを送信する必要がある。
+\subsubsection{Grblのダウンロード}
+\begin{enumerate}
+    \item Grblは\url{https://github.com/grbl/grbl}からダウンロードできる。Clone or downloadのボタンを押した先にあるDownload ZIPから最新版がダウンロードできる。
+    \item ZIPファイルを解凍しその中にあるgrblフォルダがArduinoへ書き込むgrblライブラリである。
+\end{enumerate}
+\subsubsection{Arduinoへの書き込み}
+\begin{enumerate}
+    \item ダウンロード・解凍したgrblフォルダをArduinoのライブラリフォルダ（C:/Users/ユーザネーム/Documents/Arduino/libraries）に移動する。
+    \item Arduino IDEを開き，ファイルのタブのスケッチ例のgrblをクリック。
+    \item grblを書き込む準備ができたのでPCとArduinoを接続し書き込む。このときツールのタブのボードとシリアルポートが適切なものに選択されているか確認しておく。
+\end{enumerate}
+
+\subsection{二次元データの作成とG-codeの生成方法}
+\subsubsection{二次元データの作成}
+二次元データの作成は「JwCAD」を用いて行う。
+\begin{enumerate}
+    \item 砂絵で書きたい図を作成する。二次元歯車駆動機構の仕様上描きたい図は45度傾ける必要があるので気をつける。
+    \item レイヤーを変えて，原点にしたい場所に円を描く。
+    \item 砂絵で描きたい図のレイヤと原点のレイヤにそれぞれ名前をつける。
+\end{enumerate}
+\subsubsection{G-codeの生成}
+G-codeの生成は「NCVC」を用いて行う。
+\begin{enumerate}
+    \item オプションのタブのCADデータの読み込み設定を開きレイヤ名をJwCADで作成したファイルのレイヤ名にする。
+    \item ファイルのタブのNCデータの生成（標準生成）からNCコードを生成する。
+    \item NCコードをテキストエディタで開き無駄な部分（Z軸の移動部分など）のコードを削除。
+    \item 送り速度のコードを編集。
+    \item 繰り返したい部分を行の繰り返したいだけ最後にコピー＆ペースト 。
+    \item 拡張子を.gcodeに変更して保存。
+\end{enumerate}
+
+\subsection{Grblの設定}
+Grblの設定コマンドを表\ref{tab:Grbl-Setting}に示した。ここで，\$100，\$101，\$102は機械によって違うので確認が必要である。
+本研究で作成した二次元歯車駆動機構では，式（\ref{equ:step}），式（\ref{equ:step/mm}）より$\$100=\$101=12.174$とした。
+\begin{eqnarray}
+    \label{equ:step}
+    一周あたりのステップ数&=&\cfrac{一周の角度}{1\ \rm{step}あたりの角度}\times マイクロステップによる分割数 \nonumber \\
+    &=&\cfrac{360\ \rm{deg}}{1.8\ \rm{deg/step}}\times 16\nonumber \\
+    &=&3200\ \rm{step}
+\end{eqnarray}
+\begin{eqnarray}
+    \label{equ:step/mm}
+    1\ \rm{mm}あたりのステップ数&=&\cfrac{一周あたりのステップ数}{一周あたりにねじ歯車が進む距離}\times \cfrac{1}{タイミングプーリーによる減速比}\nonumber\\
+    &=&\cfrac{3200\ \rm{step}}{23\ \rm{mm}\times5}\times\cfrac{14}{32}\nonumber\\
+    &=&12.174\ \rm{step/mm}
+\end{eqnarray}
+
+
+\begin{table}[H]
+    \centering
+    \caption{Grblの設定コマンド}
+    \label{tab:Grbl-Setting}
+    \begin{tabular}{|c|c|}
+    \hline
+    コマンド & 意味，単位 \\ \hline
+    \$0=10 & ステップパルス, μ秒 \\ \hline
+    \$1=25 & ステップアイドル時間, m秒 \\ \hline
+    \$2=0 & ステップポート反転マスク:00000000 \\ \hline
+    \$3=6 & 方向ポート反転マスク:0000110 \\ \hline
+    \$4=0 & ステップ有効反転, bool \\ \hline
+    \$5=0 & リミットpin反転, bool \\ \hline
+    \$6=0 & 探針pin反転, bool \\ \hline
+    \$10=3 & 状態リポートマスク:00000011 \\ \hline
+    \$11=0.020 & 接続偏差, mm \\ \hline
+    \$12=0.002 & 円弧寛容性, mm \\ \hline
+    \$13=0 & リポートインチ, bool \\ \hline
+    \$20=0 & ソフトリミット, bool \\ \hline
+    \$21=0 & ハードリミット, bool \\ \hline
+    \$22=0 & ホーミングサイクル, bool \\ \hline
+    \$23=1 & ホーミング反転マスク:00000001 \\ \hline
+    \$24=50.000 & ホーミングフィード, mm/min \\ \hline
+    \$25=635.000 & ホーミングシーク, mm/min \\ \hline
+    \$26=250 & ホーミング非跳ね返り, msec \\ \hline
+    \$27=1.000 & ホーミングpull-off, mm \\ \hline
+    \$100=314.961 & x, step/mm \\ \hline
+    \$101=314.961 & y, step/mm \\ \hline
+    \$102=314.961 & z, step/mm \\ \hline
+    \$110=635.000 & x 最大レート, mm/min \\ \hline
+    \$111=635.000 & y 最大レート, mm/min \\ \hline
+    \$112=635.000 & z 最大レート, mm/min \\ \hline
+    \$120=50.000 & x 加速, $\rm{mm/sec}^2$ \\ \hline
+    \$121=50.000 & y 加速, $\rm{mm/sec}^2$ \\ \hline
+    \$122=50.000 & z 加速, $\rm{mm/sec}^2$ \\ \hline
+    \$130=225.000 & x 最大移動量, mm \\ \hline
+    \$131=125.000 & y 最大移動量, mm \\ \hline
+    \$132=170.000 & z 最大移動量, mm \\ \hline
+    \end{tabular}
+    \end{table}
+
+\subsection{USBシリアル通信を用いたロボットの操作方法}
+\subsection{Bluetooth通信を用いたロボットの操作方法}
+\subsection{原因と対策}
+
+
+\end{document}
